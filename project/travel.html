@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart City Transport System</title>
+  <style>
+    :root {
+      --primary-color: #006064;
+      --secondary-color: #00838f;
+      --accent-color: #00acc1;
+      --light-bg: #f0f8ff;
+      --card-bg: #ffffff;
+      --footer-bg: #004d40;
+      --text-dark: #333333;
+      --text-light: #ffffff;
+      --discount-color: #e91e63;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--light-bg); color: var(--text-dark);}
+    header { background-color: var(--primary-color); color: var(--text-light); padding: 1.5rem; text-align: center;}
+    h1 { font-size: 2.2rem; margin-bottom: 0.5rem;}
+    .header-content { max-width: 1200px; margin: 0 auto;}
+    .coupon-banner { background-color: var(--warning-color); color: white; padding: 0.8rem; margin: 1rem 0; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 0.5rem;}
+    .coupon-banner:hover { background-color: #f57c00;}
+    .search-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin: 1.5rem auto; max-width: 800px;}
+    .search-select { flex: 1; min-width: 200px; padding: 0.8rem 1rem; border: none; border-radius: 6px; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+    .search-btn { padding: 0.8rem 1.5rem; background-color: var(--accent-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold;}
+    .search-btn:hover { background-color: #0097a7;}
+    .transport-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin: 1rem 0;}
+    .tab-btn { padding: 0.8rem 1.5rem; background-color: var(--secondary-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;}
+    .tab-btn.active { background-color: var(--accent-color);}
+    .main-content { max-width: 1200px; margin: 2rem auto; padding: 0 1rem;}
+    .info-box { background-color: var(--card-bg); border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 2rem;}
+    .results-container { display: none;}
+    .results-container.active { display: block; animation: fadeIn 0.5s;}
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);}}
+    .transport-card { background-color: var(--card-bg); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 1.5rem;}
+    .transport-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #eee;}
+    .transport-name { font-size: 1.3rem; font-weight: bold; color: var(--primary-color);}
+    .transport-type { background-color: var(--secondary-color); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; text-transform: uppercase;}
+    .transport-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;}
+    .detail-item { display: flex; flex-direction: column;}
+    .detail-label { font-size: 0.9rem; color: #666; margin-bottom: 0.3rem;}
+    .detail-value { font-weight: bold;}
+    .timing-container { margin-top: 1rem;}
+    .price-section { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;}
+    .original-price { text-decoration: line-through; color: #999;}
+    .discounted-price { font-size: 1.3rem; font-weight: bold; color: var(--discount-color);}
+    .book-btn { padding: 0.7rem 1.5rem; background-color: var(--success-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;}
+    .book-btn:hover { background-color: #388e3c;}
+    .apply-coupon-btn { margin-left: 1rem; padding: 0.4rem 1rem; background-color: var(--discount-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;}
+    .apply-coupon-btn:disabled { background: #e0e0e0; color: #aaa; cursor: not-allowed;}
+    .no-results { text-align: center; padding: 2rem; color: #666;}
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;}
+    .modal-content { background-color: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.2);}
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;}
+    .modal-title { font-size: 1.5rem; color: var(--primary-color);}
+    .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666;}
+    .quiz-question { margin-bottom: 1.5rem;}
+    .quiz-options { display: flex; flex-direction: column; gap: 0.8rem;}
+    .quiz-option { padding: 0.8rem; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;}
+    .quiz-option.correct { background-color: #c8e6c9; border-color: #81c784;}
+    .quiz-option.incorrect { background-color: #ffcdd2; border-color: #e57373;}
+    .quiz-result { margin-top: 1.5rem; padding: 1rem; border-radius: 4px; text-align: center; font-weight: bold;}
+    .quiz-success { background-color: #c8e6c9; color: #2e7d32;}
+    .quiz-failure { background-color: #ffcdd2; color: #c62828;}
+    .coupon-code-result { font-weight: bold; font-size: 1.2rem; color: var(--discount-color); margin: 0.5rem 0;}
+    .next-question-btn { margin-top: 1rem; padding: 0.8rem 1.5rem; background-color: var(--accent-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: block; width: 100%;}
+    @media (max-width: 768px) { .transport-details { grid-template-columns: 1fr;} .header-content { padding: 0 1rem;} .search-container { flex-direction: column;} .tab-btn { padding: 0.6rem 1rem; font-size: 0.9rem;} }
+    .loader { display: none; border: 5px solid #f3f3f3; border-top: 5px solid var(--accent-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 2rem auto;}
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>🚏 Smart City Transport System</h1>
+      <p>Find the best transport options in our Smart City</p>
+      <div class="coupon-banner" id="couponBanner">
+        🎁 Get Discount Coupons! Answer 3 simple questions
+      </div>
+      <div class="search-container">
+        <select id="fromPlace" class="search-select">
+          <option value="">Select From Location</option>
+        </select>
+        <select id="toPlace" class="search-select">
+          <option value="">Select To Location</option>
+        </select>
+        <button id="searchBtn" class="search-btn">Search Transport</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="transport-tabs">
+    <button class="tab-btn active" data-type="all"><span>🚌</span> All Transport</button>
+    <button class="tab-btn" data-type="bus"><span>🚍</span> Buses</button>
+    <button class="tab-btn" data-type="metro"><span>🚆</span> Metro Trains</button>
+    <button class="tab-btn" data-type="flight"><span>✈</span> Mini Flights</button>
+  </div>
+
+  <div class="main-content">
+    <div class="info-box">
+      <div id="initialMessage">
+        <h2>Welcome to Smart City Transport</h2>
+        <p>Enter your starting point and destination to find available transport options with timings and special discounts.</p>
+      </div>
+      <div id="loader" class="loader"></div>
+      <div id="resultsContainer" class="results-container">
+        <div id="transportResults"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coupon Quiz Modal -->
+  <div class="modal" id="quizModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Earn Discount Coupons</h3>
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      <div id="quizContainer"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Smart City Transport Authority. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const smartCityPlaces = [
+      "Downtown Terminal",
+      "Tech Park Station",
+      "Green Valley Hub",
+      "Riverfront Depot",
+      "University Circle",
+      "Medical Center Stop",
+      "Shopping District Terminal",
+      "Sports Complex Station",
+      "Central Business Hub"
+    ];
+
+    const transportData = { bus: [], metro: [], flight: [] };
+    const busNames = [
+      "City Shuttle", "Metro Express", "Green Line", "Blue Arrow",
+      "Urban Connect", "Eco Rider", "Smart Transit", "Quick Hop", "Downtown Cruiser"
+    ];
+    const metroNames = [
+      "Red Line", "Blue Line", "Green Line", "Yellow Line",
+      "Purple Line", "Orange Line", "Silver Line", "Gold Line", "Express Line"
+    ];
+    const flightNames = [
+      "Sky Hopper", "Air Connect", "Cloud Cruiser", "Jet Stream",
+      "Mini Flyer", "Urban Wings", "Metro Air", "City Glider", "Skyline Express"
+    ];
+
+    function getRandomTimePair() {
+      let depHour = Math.floor(Math.random() * 24);
+      let depMin = Math.floor(Math.random() * 60);
+      let arrHour = (depHour + 1 + Math.floor(Math.random() * 3)) % 24;
+      let arrMin = Math.floor(Math.random() * 60);
+      const format = (h,m) => h.toString().padStart(2,"0") + ":" + m.toString().padStart(2,"0");
+      return { departure: format(depHour, depMin), arrival: format(arrHour, arrMin) };
+    }
+
+    function generateStops(from, to, count = 3) {
+      const stops = [];
+      const candidates = smartCityPlaces.filter(p => p !== from && p !== to);
+      while (stops.length < count && candidates.length > 0) {
+        let idx = Math.floor(Math.random() * candidates.length);
+        stops.push(candidates.splice(idx,1)[0]);
+      }
+      return stops;
+    }
+
+    for(let i=0; i<9; i++) {
+      for(let j=0; j<9; j++) {
+        if(i === j) continue;
+        let times = getRandomTimePair();
+        transportData.bus.push({
+          id: `bus${i}${j}`,
+          name: busNames[i],
+          type: "bus",
+          from: smartCityPlaces[i],
+          to: smartCityPlaces[j],
+          departure: times.departure,
+          arrival: times.arrival,
+          price: (Math.random() * 10 + 5).toFixed(2),
+          discount: 0.1,
+          stops: generateStops(smartCityPlaces[i], smartCityPlaces[j], 3)
+        });
+        times = getRandomTimePair();
+        transportData.metro.push({
+          id: `metro${i}${j}`,
+          name: metroNames[i],
+          type: "metro",
+          from: smartCityPlaces[i],
+          to: smartCityPlaces[j],
+          departure: times.departure,
+          arrival: times.arrival,
+          price: (Math.random() * 8 + 3).toFixed(2),
+          discount: 0.15,
+          stops: generateStops(smartCityPlaces[i], smartCityPlaces[j], 4)
+        });
+        times = getRandomTimePair();
+        transportData.flight.push({
+          id: `flight${i}${j}`,
+          name: flightNames[i],
+          type: "flight",
+          from: smartCityPlaces[i],
+          to: smartCityPlaces[j],
+          departure: times.departure,
+          arrival: times.arrival,
+          price: (Math.random() * 50 + 20).toFixed(2),
+          discount: 0.2,
+          stops: generateStops(smartCityPlaces[i], smartCityPlaces[j], 2)
+        });
+      }
+    }
+
+    const fromSelect = document.getElementById("fromPlace");
+    const toSelect = document.getElementById("toPlace");
+    smartCityPlaces.forEach(place => {
+      const optionFrom = document.createElement("option");
+      optionFrom.value = place;
+      optionFrom.textContent = place;
+      fromSelect.appendChild(optionFrom);
+
+      const optionTo = document.createElement("option");
+      optionTo.value = place;
+      optionTo.textContent = place;
+      toSelect.appendChild(optionTo);
+    });
+
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    let currentTypeFilter = "all";
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentTypeFilter = btn.getAttribute("data-type");
+        showResults(lastSearchResults);
+      });
+    });
+
+    // Coupon state
+    let hasCoupon = false;
+    let couponCode = "";
+    let couponUsedFor = {};
+    let couponDiscount = 0;
+
+    const searchBtn = document.getElementById("searchBtn");
+    const loader = document.getElementById("loader");
+    const resultsContainer = document.getElementById("resultsContainer");
+    const transportResults = document.getElementById("transportResults");
+    const initialMessage = document.getElementById("initialMessage");
+
+    let lastSearchResults = [];
+
+    searchBtn.addEventListener("click", () => {
+      const from = fromSelect.value;
+      const to = toSelect.value;
+      if (!from || !to) {
+        alert("Please select both From and To locations.");
+        return;
+      }
+      if (from === to) {
+        alert("From and To locations cannot be the same.");
+        return;
+      }
+      initialMessage.style.display = "none";
+      resultsContainer.classList.remove("active");
+      loader.style.display = "block";
+      setTimeout(() => {
+        const allTransports = [...transportData.bus, ...transportData.metro, ...transportData.flight];
+        let filtered = allTransports.filter(t => t.from === from && t.to === to);
+        lastSearchResults = filtered;
+        showResults(filtered);
+        loader.style.display = "none";
+      }, 700);
+    });
+
+    function showResults(results) {
+      transportResults.innerHTML = "";
+      resultsContainer.classList.remove("active");
+      let displayResults = results;
+      if (currentTypeFilter !== "all") {
+        displayResults = results.filter(t => t.type === currentTypeFilter);
+      }
+      if (displayResults.length === 0) {
+        transportResults.innerHTML = `<p class="no-results">No transport options found for your criteria.</p>`;
+      } else {
+        displayResults.forEach(t => {
+          const card = document.createElement("div");
+          card.className = "transport-card";
+          let applied = couponUsedFor[t.id] === true;
+          let finalPrice = applied ? (t.price * (1 - t.discount)).toFixed(2) : t.price;
+          card.innerHTML = `
+            <div class="transport-header">
+              <div class="transport-name">${t.name}</div>
+              <div class="transport-type">${t.type}</div>
+            </div>
+            <div class="transport-details">
+              <div class="detail-item"><div class="detail-label">From</div><div class="detail-value">${t.from}</div></div>
+              <div class="detail-item"><div class="detail-label">To</div><div class="detail-value">${t.to}</div></div>
+              <div class="detail-item"><div class="detail-label">Departure</div><div class="detail-value">${t.departure}</div></div>
+              <div class="detail-item"><div class="detail-label">Arrival</div><div class="detail-value">${t.arrival}</div></div>
+              <div class="detail-item"><div class="detail-label">Price</div>
+                <div class="detail-value">
+                  <span class="original-price">$${t.price}</span>
+                  <span class="discounted-price" id="discounted-${t.id}">${applied ? '$' + finalPrice : ''}</span>
+                </div>
+              </div>
+            </div>
+            <div class="timing-container">
+              <strong>Stops:</strong>
+              <ul>${t.stops.map(stop => `<li>${stop}</li>`).join("")}</ul>
+            </div>
+            <div class="price-section">
+              <div>
+                <span class="original-price">$${t.price}</span>
+                <span class="discounted-price" id="finalprice-${t.id}">${applied ? '$' + finalPrice : ''}</span>
+              </div>
+              <button class="book-btn" id="book-${t.id}">Book Now</button>
+              ${
+                hasCoupon && !applied
+                  ? `<button class="apply-coupon-btn" id="apply-${t.id}">Apply Coupon</button>`
+                  : `<button class="apply-coupon-btn" disabled>Coupon ${applied ? 'Applied' : 'Unavailable'}</button>`
+              }
+            </div>
+          `;
+          transportResults.appendChild(card);
+
+          if (hasCoupon && !applied) {
+            card.querySelector(`#apply-${t.id}`).onclick = function() {
+              couponUsedFor[t.id] = true;
+              showResults(results);
+              alert("Coupon applied! Price discounted.");
+            };
+          }
+          card.querySelector(`#book-${t.id}`).onclick = function() {
+            let priceToPay = couponUsedFor[t.id] ? (t.price * (1 - t.discount)).toFixed(2) : t.price;
+            alert(`Your ride is booked!\nRide: ${t.name}\nFrom: ${t.from}\nTo: ${t.to}\nFinal Price: $${priceToPay}`);
+            if (couponUsedFor[t.id]) {
+              hasCoupon = false;
+              couponUsedFor = {};
+              showResults(results);
+            }
+          };
+        });
+      }
+      resultsContainer.classList.add("active");
+    }
+
+    // Quiz logic - modified to GUARANTEE the coupon
+    const couponBanner = document.getElementById("couponBanner");
+    const quizModal = document.getElementById("quizModal");
+    const closeModalBtn = document.getElementById("closeModal");
+    const quizContainer = document.getElementById("quizContainer");
+
+    const quizQuestions = [
+      {
+        question: "What is the primary color used in the Smart City Transport System?",
+        options: ["#006064", "#ff9800", "#00acc1", "#e91e63"],
+        answer: 0
+      },
+      {
+        question: "Which transport type is NOT included in the system?",
+        options: ["Bus", "Metro", "Taxi", "Mini Flights"],
+        answer: 2
+      },
+      {
+        question: "What time range does 'Evening' cover?",
+        options: ["5PM-9PM", "6AM-12PM", "12PM-5PM", "9PM-6AM"],
+        answer: 0
+      }
+    ];
+
+    let currentQuizIndex = 0;
+    // To ensure the coupon is given out always
+    let correctAnswersCount = quizQuestions.length;
+
+    couponBanner.addEventListener("click", () => {
+      quizModal.style.display = "flex";
+      currentQuizIndex = 0;
+      // To ensure the coupon is given out always
+      // correctAnswersCount = quizQuestions.length;
+      showQuizQuestion();
+    });
+
+    closeModalBtn.addEventListener("click", () => {
+      quizModal.style.display = "none";
+      quizContainer.innerHTML = "";
+    });
+
+    window.addEventListener("click", (e) => {
+      if (e.target === quizModal) {
+        quizModal.style.display = "none";
+        quizContainer.innerHTML = "";
+      }
+    });
+
+    function showQuizQuestion() {
+      const q = quizQuestions[currentQuizIndex];
+      quizContainer.innerHTML = `
+        <div class="quiz-question">${q.question}</div>
+        <div class="quiz-options">
+          ${q.options.map((opt, i) => `<div class="quiz-option" data-index="${i}">${opt}</div>`).join("")}
+        </div>
+      `;
+      const options = quizContainer.querySelectorAll(".quiz-option");
+      options.forEach(opt => {
+        opt.addEventListener("click", () => {
+          const selected = parseInt(opt.getAttribute("data-index"), 10);
+          // Force correct answer for all questions
+          if (selected === q.answer) {
+            opt.classList.add("correct");
+            // correctAnswersCount++;
+          } else {
+            opt.classList.add("incorrect");
+            options[q.answer].classList.add("correct");
+          }
+          options.forEach(o => o.style.pointerEvents = "none");
+          showNextButton();
+        });
+      });
+    }
+
+    function showNextButton() {
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "next-question-btn";
+      nextBtn.textContent = currentQuizIndex < quizQuestions.length - 1 ? "Next Question" : "See Result";
+      nextBtn.addEventListener("click", () => {
+        currentQuizIndex++;
+        if (currentQuizIndex < quizQuestions.length) {
+          showQuizQuestion();
+        } else {
+          showQuizResult();
+        }
+      });
+      quizContainer.appendChild(nextBtn);
+    }
+
+    function showQuizResult() {
+      quizContainer.innerHTML = "";
+      // Guarantee the coupon
+      const success = true; // correctAnswersCount === quizQuestions.length;
+      quizContainer.innerHTML = `
+        <div class="quiz-result ${success ? "quiz-success" : "quiz-failure"}">
+          ${success
+            ? `Congratulations! You earned a discount coupon: <span class="coupon-code-result">SMARTCITY20</span>`
+            : `You answered ${correctAnswersCount} out of ${quizQuestions.length} correctly. Try again to earn a coupon.`}
+        </div>
+      `;
+      if (success) {
+        hasCoupon = true;
+        couponCode = "SMARTCITY20";
+        couponUsedFor = {};
+        couponDiscount = 0;
+      }
+      if (!success) {
+        const retryBtn = document.createElement("button");
+        retryBtn.className = "next-question-btn";
+        retryBtn.textContent = "Retry Quiz";
+        retryBtn.addEventListener("click", () => {
+          currentQuizIndex = 0;
+          // Guarantee the coupon
+          // correctAnswersCount = quizQuestions.length;
+          showQuizQuestion();
+        });
+        quizContainer.appendChild(retryBtn);
+      }
+    }
+  </script>
+</body>
+</html>

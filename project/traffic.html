@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Signal Status Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-box input {
+            padding: 10px 15px;
+            width: 60%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 8px rgba(0,123,255,0.2);
+        }
+
+        .signal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .signal-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .signal-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .signal-card h2 {
+            margin-top: 0;
+            color: #007BFF;
+        }
+
+        .signal-info {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .green {
+            background-color: #28a745;
+        }
+
+        .yellow {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .red {
+            background-color: #dc3545;
+        }
+
+        @media (max-width: 600px) {
+            .search-box input {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Traffic Signal Status Dashboard</h1>
+
+    <div class="search-box">
+        <input type="text" id="search" placeholder="Search for a region..." oninput="filterRegions()">
+    </div>
+
+    <div class="signal-grid" id="signalGrid">
+        <div class="signal-card" data-region="Downtown">
+            <h2>Downtown</h2>
+            <div class="signal-info">Time: 2025-06-03 08:00 AM</div>
+            <div class="signal-info">Status: <span class="status green">Green</span></div>
+            <div class="signal-info">The signal is green, allowing vehicles to proceed.</div>
+        </div>
+        <div class="signal-card" data-region="Main Street">
+            <h2>Main Street</h2>
+            <div class="signal-info">Time: 2025-06-03 08:30 AM</div>
+            <div class="signal-info">Status: <span class="status red">Red</span></div>
+            <div class="signal-info">The signal is red, vehicles must stop.</div>
+        </div>
+        <div class="signal-card" data-region="City Park">
+            <h2>City Park</h2>
+            <div class="signal-info">Time: 2025-06-03 09:00 AM</div>
+            <div class="signal-info">Status: <span class="status yellow">Yellow</span></div>
+            <div class="signal-info">The signal is yellow, prepare to stop.</div>
+        </div>
+        <div class="signal-card" data-region="Central Avenue">
+            <h2>Central Avenue</h2>
+            <div class="signal-info">Time: 2025-06-03 10:00 AM</div>
+            <div class="signal-info">Status: <span class="status green">Green</span></div>
+            <div class="signal-info">The signal is green, allowing vehicles to proceed.</div>
+        </div>
+        <div class="signal-card" data-region="Eastside">
+            <h2>Eastside</h2>
+            <div class="signal-info">Time: 2025-06-03 10:30 AM</div>
+            <div class="signal-info">Status: <span class="status red">Red</span></div>
+            <div class="signal-info">The signal is red, vehicles must stop.</div>
+        </div>
+    </div>
+
+    <script>
+        function filterRegions() {
+            const searchQuery = document.getElementById('search').value.toLowerCase();
+            const signalCards = document.querySelectorAll('.signal-card');
+
+            signalCards.forEach(card => {
+                const region = card.getAttribute('data-region').toLowerCase();
+                if (region.includes(searchQuery)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

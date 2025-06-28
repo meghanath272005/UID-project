@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart City</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom right, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+            z-index: 0;
+        }
+
+        .main-heading {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            font-size: 54px;
+            margin: 40px 0 20px;
+            color: #f8f9fa;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.6);
+            letter-spacing: 2px;
+            border-bottom: 3px solid #00d2ff;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .link-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .link-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .link-button {
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+            padding: 16px 36px;
+            border-radius: 50px;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            margin: 15px;
+            transition: all 0.4s ease-in-out;
+            border: 2px solid transparent;
+        }
+
+        .link-button:hover {
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            transform: translateY(-5px) scale(1.05);
+            border-color: #fff;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+        }
+
+        .line-decor {
+            height: 3px;
+            width: 80%;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            margin: 30px auto;
+            border-radius: 50px;
+        }
+
+        @media (max-width: 600px) {
+            .main-heading {
+                font-size: 36px;
+            }
+
+            .link-button {
+                font-size: 18px;
+                padding: 12px 24px;
+            }
+
+            .line-decor {
+                width: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="main-heading">Smart City </h1>
+    <div class="line-decor"></div>
+
+    <div class="link-container">
+        <div class="link-row">
+            <a href="C:\UID\project\travel.html" class="link-button" target="contentFrame">Travel</a>
+            <a href="C:\UID\project\health.html" class="link-button" target="contentFrame">Health</a>
+        </div>
+        <div class="link-row">
+            <a href="C:\UID\project\traffic.html" class="link-button" target="contentFrame">Traffic Signal</a>
+            <a href="C:\UID\project\egovernence.html" class="link-button" target="contentFrame">E-Governance</a>
+        </div>
+        <div>
+            <a href="C:\UID\project\wastage.html" class="link-button" target="contentFrame">Waste Management</a>
+       </div>
+
+    </div>
+
+</body>
+</html>

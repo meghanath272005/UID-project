@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Common Diseases and Medicines</title>
+    <style>
+        /* Set the background image */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: "file:///C:/Users/likit/Pictures/medicine.png"    
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        /* Container for the form and image */
+        .container {
+            width: 50%;
+            padding: 30px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8); /* Slight transparency */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Center the image inside the box */
+        .image-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            border: 2px dashed #ccc;
+            margin-top: 10px;
+            padding: 10px;
+            display: none; /* Hide by default */
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff; /* Nice blue color for the heading */
+        }
+
+        label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        select, input[type="text"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        select {
+            background-color: #f8f8f8;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"] {
+            background-color: #f8f8f8;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+    </style>
+    <script>
+        function updateMedicine() {
+            var disease = document.getElementById("disease").value;
+            var medicine = {
+                "Common Cold": { name: "Paracetamol", image: "file:///C:/Users/likit/Pictures/para.jpg"  },
+                "Flu": { name: "Oseltamivir", image:"file:///C:/Users/likit/Pictures/Oseltamivir.jpg" },
+                "Hypertension": { name: "Amlodipine", image:"file:///C:/Users/likit/Pictures/amlodipine.jpg"  },
+                "Diabetes": { name: "Metformin", image: "file:///C:/Users/likit/Pictures/Metformin.jpg" },
+                "Asthma": { name: "Salbutamol", image: "file:///C:/Users/likit/Pictures/Salbutamol.jpg" },
+                "Migraine": { name: "Sumatriptan", image: "file:///C:/Users/likit/Pictures/Sumatriptan.jpg"},
+                "Acid Reflux": { name: "Omeprazole", image: "file:///C:/Users/likit/Pictures/Omeprazole.jpg" },
+                "Arthritis": { name: "Ibuprofen", image: "file:///C:/Users/likit/Pictures/Ibuprofen.jpg" },
+                "Allergies": { name: "Loratadine", image: "file:///C:/Users/likit/Pictures/Loratadine.jpg" },
+                "Pneumonia": { name: "Azithromycin", image: "file:///C:/Users/likit/Pictures/Azithromycin.jpg" }
+            };
+            var selectedMedicine = medicine[disease];
+            
+            // Update the medicine name
+            document.getElementById("medicine").value = selectedMedicine ? selectedMedicine.name : "";
+
+            // Update the medicine image
+            var medicineImage = document.getElementById("medicine-image");
+            var imageBox = document.getElementById("image-box");
+            if (selectedMedicine) {
+                medicineImage.src = selectedMedicine.image;
+                imageBox.style.display = "flex"; // Show the image box
+            } else {
+                imageBox.style.display = "none"; // Hide the image box if no disease selected
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Common Diseases and Their Medicines</h2>
+        <form>
+            <label for="disease">Select a Disease:</label>
+            <select id="disease" name="disease" onchange="updateMedicine()">
+                <option value="">--Select Disease--</option>
+                <option value="Common Cold">Common Cold</option>
+                <option value="Flu">Flu</option>
+                <option value="Hypertension">Hypertension</option>
+                <option value="Diabetes">Diabetes</option>
+                <option value="Asthma">Asthma</option>
+                <option value="Migraine">Migraine</option>
+                <option value="Acid Reflux">Acid Reflux</option>
+                <option value="Arthritis">Arthritis</option>
+                <option value="Allergies">Allergies</option>
+                <option value="Pneumonia">Pneumonia</option>
+            </select>
+            <br><br>
+            <label for="medicine">Recommended Medicine:</label>
+            <input type="text" id="medicine" name="medicine" readonly>
+            <br><br>
+            
+            <!-- Medicine Image Box -->
+            <div id="image-box" class="image-box">
+                <img id="medicine-image" src="" alt="Medicine Image">
+            </div>
+            
+            <br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
